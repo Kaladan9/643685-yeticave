@@ -1,7 +1,7 @@
 # Личный проект «YetiCave»
 
 * Студент: [Николай Иванов](https://up.htmlacademy.ru/php/5/user/643685).
-* Наставник: `Неизвестно`.
+* Наставник: [Сергей Зубов](https://htmlacademy.ru/profile/serj).
 
 ---
 
