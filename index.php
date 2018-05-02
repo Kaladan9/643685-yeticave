@@ -51,11 +51,12 @@ $product_cards = [
 function formatted_price($price) {
     ceil($price);
 
-    $result_price = '';
+    $result_price = "$price" . " ₽";
     if ($price > 1000) {
         $result_price = number_format($price, 0, '', ' ') . "  ₽";
-        return $result_price;
     }
+
+    return $result_price;
 }
 
 ?>
