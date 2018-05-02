@@ -47,6 +47,17 @@ $product_cards = [
         'product_img_url' => 'img/lot-6.jpg'
     ],
 ];
+
+function formatted_price($price) {
+    ceil($price);
+
+    $result_price = '';
+    if ($price > 1000) {
+        $result_price = number_format($price, 0, '', ' ') . "  ₽";
+        return $result_price;
+    }
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -133,7 +144,7 @@ $product_cards = [
                     <div class="lot__state">
                         <div class="lot__rate">
                             <span class="lot__amount">Стартовая цена</span>
-                            <span class="lot__cost"><?=$val['price']; ?><b class="rub">р</b></span>
+                            <span class="lot__cost"><?=formatted_price($val['price']); ?></span>
                         </div>
                         <div class="lot__timer timer">
 
