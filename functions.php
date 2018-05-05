@@ -22,4 +22,20 @@ function include_templates($template_url, $template_data = []) {
     $html = ob_get_clean();
     return $html;
 }
+
+date_default_timezone_set('Europe/Moscow');
+
+function lot_time_ending() {
+
+    $ts_midnight = strtotime('tomorrow');
+    $time_to_midnight = $ts_midnight - time();
+
+    $hour = floor($time_to_midnight / 3600);
+    $minute = floor(($time_to_midnight % 3600)/ 60);
+
+    $ending_time = $hour . ':' . $minute;
+
+    return strftime('%R', strtotime($ending_time));
+}
+
 ?>
