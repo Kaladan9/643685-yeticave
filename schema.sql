@@ -12,33 +12,33 @@ CREATE UNIQUE INDEX i_category ON categories(name);
 
 CREATE TABLE lots (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    add_date DATETIME,
-    name CHAR(64),
-    dscr VARCHAR(255),
-    img_url CHAR(128),
-	 primary_price DECIMAL(10,2),
-	 end_date DATETIME,
-	 rate_step DECIMAL(10,2),
-	 author_id INT,
+    add_date DATETIME NOT NULL,
+    name CHAR(64) NOT NULL,
+    dscr VARCHAR(255) NOT NULL,
+    img_url CHAR(128) NOT NULL,
+	 primary_price DECIMAL(10,2) UNSIGNED NOT NULL,
+	 end_date DATETIME NOT NULL,
+	 rate_step DECIMAL(10,2) UNSIGNED NOT NULL,
+	 author_id INT NOT NULL,
     winner_id INT,
-    category_id INT
+    category_id INT NOT NULL
 );
 CREATE INDEX i_name ON lots(name);
 CREATE INDEX i_dscr ON lots(dscr);
 
 CREATE TABLE bet (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    bet_date DATETIME,
-    amount DECIMAL(10,2),
-    user_id INT,
-    lot_id INT
+    bet_date DATETIME NOT NULL,
+    amount DECIMAL(10,2) UNSIGNED NOT NULL,
+    user_id INT NOT NULL,
+    lot_id INT NOT NULL
 );
 
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    email CHAR(128),
-    name CHAR(64),
-    pass CHAR(128),
+    email CHAR(128) NOT NULL,
+    name CHAR(64) NOT NULL,
+    pass CHAR(128) NOT NULL,
     avatar_url CHAR(128),
     contacts CHAR(128),
     created_lots_id INT,
