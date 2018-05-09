@@ -39,7 +39,7 @@ ORDER BY id;
 
 SELECT l.name, l.primary_price, l.img_url, MAX(b.amount) AS max_bet, COUNT(b.lot_id) AS bet_count, c.name
 FROM lots l
-JOIN bet b
+LEFT JOIN bet b
 ON b.lot_id = l.id
 JOIN categories c
 ON l.category_id = c.id
@@ -57,7 +57,7 @@ WHERE l.id = '2';
 
 -- обновить название лота по его идентификатору:
 
-UPDATE lots 
+UPDATE lots
 SET name ='Маска Джейсона'
 WHERE id = '6';
 
