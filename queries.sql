@@ -23,9 +23,9 @@ VALUES ('2018-04-02 12:00:30', '2014 Rossignol District Snowboard',             
        ('2018-05-11 22:25:00', 'Маска awwwrrrrr',                                   'helmet',              'img/lot-6.jpg', '5400',   '2018-07-20 21:15:00', '250', '2', '6');
 
 INSERT INTO bet (bet_date, amount, user_id, lot_id)
-VALUES ('2018-04-02 12:10:30', '11099', '1', '1'),
-       ('2018-04-02 12:15:40', '11199', '3', '1'),
-       ('2018-04-02 12:30:45', '11299', '1', '1'),
+VALUES ('2018-05-12 12:10:30', '11099', '1', '7'),
+       ('2018-05-12 12:15:40', '11199', '3', '7'),
+       ('2018-05-12 12:30:45', '11299', '1', '7'),
        ('2018-04-02 13:34:45', '15199', '1', '2');
 
 -- получить все категории:
@@ -68,3 +68,13 @@ SELECT bet_date, amount
 FROM bet b
 WHERE lot_id = 1
 ORDER BY bet_date DESC;
+
+SELECT l.id, b.bet_date AS bet_date, b.amount AS amount, b.user_id, COUNT(b.lot_id) AS bet_count, u.id, u.name AS name
+                FROM lots l
+                JOIN bet b
+                ON l.id = b.lot_id
+                JOIN users u
+                ON u.id = b.user_id
+                WHERE l.id = '$get_lot_id'
+
+                ORDER BY b.bet_date DESC LIMIT 10;
