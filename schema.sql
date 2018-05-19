@@ -16,10 +16,10 @@ CREATE TABLE lots (
     name CHAR(64) NOT NULL,
     dscr VARCHAR(255) NOT NULL,
     img_url CHAR(128) NOT NULL,
-	 primary_price DECIMAL(10,2) UNSIGNED NOT NULL,
-	 end_date DATETIME NOT NULL,
-	 rate_step DECIMAL(10,2) UNSIGNED NOT NULL,
-	 author_id INT NOT NULL,
+    primary_price INT NOT NULL,
+    end_date DATETIME NOT NULL,
+    rate_step INT NOT NULL,
+    author_id INT NOT NULL,
     winner_id INT,
     category_id INT NOT NULL
 );
@@ -29,7 +29,7 @@ CREATE INDEX i_dscr ON lots(dscr);
 CREATE TABLE bet (
     id INT AUTO_INCREMENT PRIMARY KEY,
     bet_date DATETIME NOT NULL,
-    amount DECIMAL(10,2) UNSIGNED NOT NULL,
+    amount INT NOT NULL,
     user_id INT NOT NULL,
     lot_id INT NOT NULL
 );
