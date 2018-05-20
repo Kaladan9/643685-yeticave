@@ -3,7 +3,7 @@
     <ul class="nav__list container">
       <?php foreach ($product_categories as $cat): ?>
         <li class="nav__item">
-          <a href="all-lots.html"><?=$cat; ?></a>
+          <a href="all-lots.html"><?=$cat['name']; ?></a>
         </li>
       <?php endforeach; ?>
     </ul>

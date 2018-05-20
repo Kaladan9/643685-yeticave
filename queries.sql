@@ -69,12 +69,3 @@ FROM bet b
 WHERE lot_id = 1
 ORDER BY bet_date DESC;
 
-SELECT l.id, b.bet_date AS bet_date, b.amount AS amount, b.user_id, COUNT(b.lot_id) AS bet_count, u.id, u.name AS name
-                FROM lots l
-                JOIN bet b
-                ON l.id = b.lot_id
-                JOIN users u
-                ON u.id = b.user_id
-                WHERE l.id = '$get_lot_id'
-
-                ORDER BY b.bet_date DESC LIMIT 10;
