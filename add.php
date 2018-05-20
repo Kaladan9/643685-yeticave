@@ -46,12 +46,11 @@ if (!$con) {
             }
         }
 
-        if (isset($_FILES['lot_img']['name'])) {
+        if  (($_FILES['lot_img']['name']) !== '') {
             $tmp_name = $_FILES['lot_img']['tmp_name'];
             $path = $_FILES['lot_img']['name'];
 
-            $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            $file_type = finfo_file($finfo, $tmp_name);
+            $file_type = mime_content_type($tmp_name);
 
             if ($file_type == 'image/png' || $file_type == 'image/jpeg') {
                 $filename = uniqid();
