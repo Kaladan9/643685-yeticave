@@ -8,10 +8,10 @@ VALUES  ('Доски и лыжи'),
         ('Инструменты'),
         ('Разное');
 
-INSERT INTO users (email, name, pass, avatar_url, contacts)
-VALUES ('panenko231@mail.ru', 'Виктор Паненко',  'pan321', 'img/pan321.png', '903-321-45-32'),
-       ('golikov123@mail.ru', 'Дмитрий Голиков', 'gol123', 'img/gol123.png', '925-322-32-32'),
-       ('pozvonit@mail.ru',   'Аристарх Займ',   'zaim',   'img/zaim.png',   '800-555-35-35');
+INSERT INTO users (add_date, email, name, pass, avatar_url, contacts)
+VALUES ('2018-04-02 12:00:30', 'panenko231@mail.ru', 'Виктор Паненко',  'pan321', 'img/pan321.png', '903-321-45-32'),
+       ('2018-04-02 12:00:30', 'golikov123@mail.ru', 'Дмитрий Голиков', 'gol123', 'img/gol123.png', '925-322-32-32'),
+       ('2018-04-02 12:00:30', 'pozvonit@mail.ru',   'Аристарх Займ',   'zaim',   'img/zaim.png',   '800-555-35-35');
 
 INSERT INTO lots (add_date, name, dscr, img_url, primary_price, end_date, rate_step, author_id, category_id)
 VALUES ('2018-04-02 12:00:30', '2014 Rossignol District Snowboard',                 'Very good snowboard', 'img/lot-1.jpg', '10999',  '2018-06-02 12:00:30', '100', '2', '1'),

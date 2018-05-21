@@ -36,6 +36,7 @@ CREATE TABLE bet (
 
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    add_date DATETIME NOT NULL,
     email CHAR(128) NOT NULL,
     name CHAR(64) NOT NULL,
     pass CHAR(128) NOT NULL,
