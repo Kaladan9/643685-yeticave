@@ -11,17 +11,14 @@ if (!$con) {
 
 } else {
     //получаем список категорий
-    $cat_sql = "SELECT name FROM categories
+    $cat_sql = "SELECT id, name FROM categories
     ORDER BY id";
 
     $cat_res = mysqli_query($con, $cat_sql);
     $product_categories = [];
 
     if ($cat_res) {
-        $cats = mysqli_fetch_all($cat_res, MYSQLI_ASSOC);
-        foreach ($cats as $cat) {
-            $product_categories[] = $cat['name'];
-        }
+        $product_categories = mysqli_fetch_all($cat_res, MYSQLI_ASSOC);
 
     } else {
         $sql_error = mysqli_error($con);
@@ -110,7 +107,7 @@ if (!$con) {
 
         $layout_content = include_templates('templates/layout.php', [
             'page_content' => $page_content,
-            'title' => $title,
+            'title' => 'Yeticave - Просмотр лота',
             'is_auth' => $is_auth,
             'user_name' => $user_name,
             'user_avatar' => $user_avatar,

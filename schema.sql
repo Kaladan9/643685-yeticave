@@ -6,7 +6,7 @@ USE yeticave;
 
 CREATE TABLE categories (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name CHAR(64)
+    name CHAR(64) NOT NULL
 );
 CREATE UNIQUE INDEX i_category ON categories(name);
 

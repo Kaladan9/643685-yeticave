@@ -28,17 +28,14 @@ if (!$con) {
    }
 
 
-    $sql = 'SELECT name FROM categories '
+    $sql = 'SELECT id, name FROM categories '
          . 'ORDER BY id';
 
     $result = mysqli_query($con, $sql);
     $product_categories = [];
 
     if ($result) {
-        $cats = mysqli_fetch_all($result, MYSQLI_ASSOC);
-        foreach ($cats as $cat) {
-            $product_categories[] = $cat['name'];
-        }
+        $product_categories = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
     } else {
         $sql_error = mysqli_error($con);
