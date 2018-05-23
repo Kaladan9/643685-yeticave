@@ -2,6 +2,7 @@
 require_once 'functions.php';
 require_once 'data.php';
 
+session_start();
 
 $con = mysqli_connect('localhost', 'root', '', 'yeticave');
 

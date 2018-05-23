@@ -7,10 +7,7 @@ $bets = [
     ['name' => 'Семён', 'price' => 10000, 'ts' => strtotime('last week')]
 ];
 
-$is_auth = (bool) rand(0, 1);
 
-$title = 'Главная';
-$user_name = 'Константин';
-$user_avatar = 'img/user.jpg';
+
 
 

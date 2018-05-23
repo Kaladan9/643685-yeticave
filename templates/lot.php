@@ -23,6 +23,9 @@
       <?php endforeach; ?>
 
       <div class="lot-item__right">
+
+        <?php if (isset($_SESSION['user'])): ?>
+
         <div class="lot-item__state">
           <div class="lot-item__timer timer">
             <?=lot_time_ending(); ?>
@@ -47,8 +50,10 @@
               <button type="submit" class="button">Сделать ставку</button>
             </form>
           <?php endforeach; ?>
-
         </div>
+
+        <?php endif; ?>
+
         <div class="history">
           <h3>История ставок (<span><?=count($bet_info) ?></span>)</h3>
           <table class="history__list">
