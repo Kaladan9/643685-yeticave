@@ -5,117 +5,119 @@ require_once 'data.php';
 session_start();
 
 $con = mysqli_connect('localhost', 'root', '', 'yeticave');
+    //проверяем подключение к БД
+get_sqlcon_info($con);
 
-if (!$con) {
-    $sql_error = mysqli_connect_error();
-    print('Ошибка подключения: ' . $sql_error);
+    //получаем список категорий
+$product_categories = get_product_cat($con);
+
+    //проверка существования GET запроса
+$get_lot_id = $_GET['lot_id'];
+
+$sql_lot_id = mysqli_query($con, "SELECT id FROM lots WHERE id = '$get_lot_id'");
+
+$row_cnt = mysqli_num_rows($sql_lot_id);
+
+$lot_info = [];
+$price_info = [];
+$bet_info =[];
+
+if (isset($get_lot_id) && !is_null($get_lot_id) && $row_cnt > 0) {
+
+    $lot_info = get_lot_info($con, $get_lot_id);
+
+    $price_info = get_lotprice_info($con, $get_lot_id);
+
+    $bet_info = get_bet_info($con, $get_lot_id);
+
+    //определяем показывать ли пользователю блок с добавлением ставки:
+    $bet_div_visible = true;
+
+    //авторизован ли пользователь?
+    if (!isset($_SESSION['user'])) {
+        $bet_div_visible = false;
+    }
+
+    //делал ли пользователь ставку на текущий лот?
+    $bet_exist = is_user_bet($con, $_SESSION['user']['id'], $get_lot_id);
+
+    if ($bet_exist) {
+        $bet_div_visible = false;
+    }
+
+    //создан ли лот текущим пользователем?
+    if ($lot_info['0']['author_id'] === $_SESSION['user']['id']) {
+        $bet_div_visible =false;
+    }
+
+    //истек ли срок размещения лота?
+    if (strtotime($lot_info['0']['end_date']) < time()) {
+        $bet_div_visible = false;
+    }
+
+    $page_content = include_templates('templates/lot.php', [
+        'lot_info' => $lot_info,
+        'price_info' => $price_info,
+        'bet_info' => $bet_info,
+        'bet_div_visible' => $bet_div_visible,
+        'product_categories' => $product_categories]);
 
 } else {
-    //получаем список категорий
-    $cat_sql = "SELECT id, name FROM categories
-    ORDER BY id";
+    header('HTTP/1.1 404 Not Found');
+    header('Status: 404 Not Found');
 
-    $cat_res = mysqli_query($con, $cat_sql);
-    $product_categories = [];
+    $page_content = 'Страница 404';
+}
 
-    if ($cat_res) {
-        $product_categories = mysqli_fetch_all($cat_res, MYSQLI_ASSOC);
 
-    } else {
-        $sql_error = mysqli_error($con);
-        $page_content = '';
-        print('Ошибка БД: ' . $sql_error);
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $bet = $_POST['bet'];
+
+    $required = ['amount'];
+    $dict = ['amount' => 'Ваша ставка'];
+    $errors = [];
+
+    //определяем минимально возможную ставку
+    $min_amount = get_min_amount($price_info['0']['primary_price'], $price_info['0']['max_bet'], $price_info['0']['rate_step']);
+
+    if (!ctype_digit($bet['amount']) || ((int)($bet['amount']) < $min_amount)) {
+        $errors['amount'] = 'Введите корректную ставку';
     }
-    //проверка существования GET запроса
-    $get_lot_id = $_GET['lot_id'];
 
-    $sql_lot_id = mysqli_query($con, "SELECT id FROM lots WHERE id = '$get_lot_id'");
+    if (empty($bet['amount'])) {
+        $errors['amount'] = 'Это поле надо заполнить';
+    }
 
-    $row_cnt = mysqli_num_rows($sql_lot_id);
-
-    if (isset($get_lot_id) && !is_null($get_lot_id) && $row_cnt > 0) {
-        //получаем информацию о лоте
-        $lot_sql = "SELECT l.id AS lot_id, l.name AS name, l.dscr AS description,
-        l.img_url AS product_img_url, c.name AS category
-        FROM lots l
-        JOIN categories c
-        ON l.category_id = c.id
-        WHERE l.id = '$get_lot_id'";
-
-        if  ($lot_res = mysqli_query($con, $lot_sql)) {
-            $lot_info = mysqli_fetch_all($lot_res, MYSQLI_ASSOC);
-
-        } else {
-            $sql_error = mysqli_error($con);
-            $page_content = '';
-            print('Ошибка БД: ' . $sql_error);
-        }
-
-        //получаем информацию о цене
-        $price_sql = "SELECT l.id, l.primary_price AS primary_price, l.rate_step AS rate_step, MAX(b.amount) AS max_bet
-        FROM lots l
-        JOIN bet b
-        ON l.id = b.lot_id
-        WHERE l.id = '$get_lot_id'";
-
-        if ($price_res = mysqli_query($con, $price_sql)) {
-            $price_info = mysqli_fetch_all($price_res, MYSQLI_ASSOC);
-
-        } else {
-            $sql_error = mysqli_error($con);
-            $page_content = '';
-            print('Ошибка БД: ' . $sql_error);
-        }
-
-        //получаем информацию о ставках
-        $bet_sql = "SELECT b.bet_date AS bet_date, b.amount AS amount, u.name AS name
-        FROM bet b
-        JOIN users u
-        ON u.id = b.user_id
-        WHERE lot_id = '$get_lot_id'
-        ORDER BY bet_date DESC LIMIT 10";
-
-
-        if ($bet_res = mysqli_query($con, $bet_sql)) {
-            $bet_info = mysqli_fetch_all($bet_res, MYSQLI_ASSOC);
-
-        } else {
-            $sql_error = mysqli_error($con);
-            $page_content = '';
-            print('Ошибка БД: ' . $sql_error);
-        }
-
+    if (count($errors)) {
         $page_content = include_templates('templates/lot.php', [
             'lot_info' => $lot_info,
             'price_info' => $price_info,
             'bet_info' => $bet_info,
+            'errors' => $errors,
+            'dict' => $dict,
+            'bet' => $bet,
+            'bet_div_visible' => $bet_div_visible,
             'product_categories' => $product_categories]);
-
-        $layout_content = include_templates('templates/layout.php', [
-            'page_content' => $page_content,
-            'title' => $title,
-            'is_auth' => $is_auth,
-            'user_name' => $user_name,
-            'user_avatar' => $user_avatar,
-            'product_categories' => $product_categories
-        ]);
-
     } else {
-        header('HTTP/1.1 404 Not Found');
-        header('Status: 404 Not Found');
-
-        $page_content = 'Страница 404';
-
-        $layout_content = include_templates('templates/layout.php', [
-            'page_content' => $page_content,
-            'title' => 'Yeticave - Просмотр лота',
-            'is_auth' => $is_auth,
-            'user_name' => $user_name,
-            'user_avatar' => $user_avatar,
-            'product_categories' => $product_categories
-        ]);
+    //добавляем ставку в БД
+        add_user_bet($con, $bet['amount'], $_SESSION['user']['id'], $get_lot_id);
     }
+    $page_content = include_templates('templates/lot.php', [
+        'lot_info' => $lot_info,
+        'price_info' => $price_info,
+        'bet_info' => $bet_info,
+        'errors' => $errors,
+        'dict' => $dict,
+        'bet' => $bet,
+        'bet_div_visible' => $bet_div_visible,
+        'product_categories' => $product_categories]);
 }
+
+$layout_content = include_templates('templates/layout.php', [
+    'page_content' => $page_content,
+    'title' => 'Yeticave - Просмотр лота',
+    'product_categories' => $product_categories
+]);
 
 print($layout_content);
 ?>
