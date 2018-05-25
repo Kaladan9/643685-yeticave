@@ -24,11 +24,11 @@
 
       <div class="lot-item__right">
 
-        <?php if (isset($_SESSION['user'])): ?>
+        <?php if ($bet_div_visible): ?>
 
         <div class="lot-item__state">
           <div class="lot-item__timer timer">
-            <?=lot_time_ending(); ?>
+            <?=lot_time_ending($lot_info['0']['end_date']); ?>
           </div>
 
           <?php foreach ($price_info as $key => $val): ?>
@@ -41,11 +41,19 @@
                 Мин. ставка <span><?=htmlspecialchars(max($val['primary_price'], $val['max_bet']) + $val['rate_step']); ?></span>
               </div>
             </div>
-            <form class="lot-item__form" action="https://echo.htmlacademy.ru" method="post">
-              <p class="lot-item__form-item">
+
+          <?php $classname = (count($errors)) ? "form--invalid" : ""; ?>
+
+            <form class="lot-item__form <?=$classname; ?>" action="" method="post">
+
+            <?php $classname = isset($errors['amount']) ? "form__item--invalid" : "";
+            $value = isset($bet['amount']) ? $bet['amount'] : ""; ?>
+
+              <p class="lot-item__form-item <?=$classname; ?>">
                 <label for="cost">Ваша ставка</label>
-                <input id="cost" type="number" name="cost"
-                placeholder= "<?=htmlspecialchars(max($val['primary_price'], $val['max_bet']) + $val['rate_step']); ?>">
+                <input id="cost" type="number" name="bet[amount]"
+                placeholder= "<?=htmlspecialchars(max($val['primary_price'], $val['max_bet']) + $val['rate_step']); ?>" value="<?=$value;?>">
+                <span class="form__error"><?=$dict['amount']; ?> : <?=$errors['amount']; ?></span>
               </p>
               <button type="submit" class="button">Сделать ставку</button>
             </form>
@@ -61,7 +69,7 @@
               <tr class="history__item">
                 <td class="history__name"><?=htmlspecialchars($val['name']); ?></td>
                 <td class="history__price"><?=htmlspecialchars($val['amount']); ?></td>
-                <td class="history__time"><?=htmlspecialchars($val['bet_date']); ?></td>
+                <td class="history__time"><?=htmlspecialchars(formated_bet_date($val['bet_date'])); ?></td>
               </tr>
             <?php endforeach; ?>
           </table>

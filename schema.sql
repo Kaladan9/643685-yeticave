@@ -41,8 +41,6 @@ CREATE TABLE users (
     name CHAR(64) NOT NULL,
     pass CHAR(128) NOT NULL,
     avatar_url CHAR(128),
-    contacts CHAR(128),
-    created_lots_id INT,
-    bet_id INT
+    contacts CHAR(128)
 );
 CREATE UNIQUE INDEX i_email ON users(email);

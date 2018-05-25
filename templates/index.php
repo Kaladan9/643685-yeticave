@@ -27,6 +27,7 @@
         <h2>Открытые лоты</h2>
     </div>
     <ul class="lots__list">
+
     <?php foreach ($product_cards as $key => $val): ?>
         <li class="lots__item lot">
             <div class="lot__image">
@@ -42,7 +43,7 @@
                         <span class="lot__cost"><?=formatted_price($val['price']); ?></span>
                     </div>
                     <div class="lot__timer timer">
-                        <?=lot_time_ending(); ?>
+                        <?=lot_time_ending($val['end_date']); ?>
                     </div>
                 </div>
             </div>
