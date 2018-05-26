@@ -1,6 +1,6 @@
 <?php
 require_once 'functions.php';
-require_once 'data.php';
+require_once 'sqlconnect.php';
 
 session_start();
 
