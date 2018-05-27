@@ -12,7 +12,8 @@ get_sqlcon_info($con);
 $product_categories = get_product_cat($con);
 
     //проверка существования GET запроса
-$get_lot_id = $_GET['lot_id'];
+$get_lot_id = intval($_GET['lot_id']);
+$get_lot_id = mysqli_real_escape_string($con, $get_lot_id);
 
 $sql_lot_id = mysqli_query($con, "SELECT id FROM lots WHERE id = '$get_lot_id'");
 
@@ -40,7 +41,6 @@ if (isset($get_lot_id) && !is_null($get_lot_id) && $row_cnt > 0) {
 
     //делал ли пользователь ставку на текущий лот?
     $bet_exist = is_user_bet($con, $_SESSION['user']['id'], $get_lot_id);
-
     if ($bet_exist) {
         $bet_div_visible = false;
     }
@@ -69,8 +69,7 @@ if (isset($get_lot_id) && !is_null($get_lot_id) && $row_cnt > 0) {
     $page_content = 'Страница 404';
 }
 
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $bet = $_POST['bet'];
 
     $required = ['amount'];

@@ -10,7 +10,7 @@ get_sqlcon_info($con);
 
 $product_categories = get_product_cat($con);
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $login = $_POST['login'];
 
     $required = ['email', 'pass'];

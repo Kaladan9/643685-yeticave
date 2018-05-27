@@ -15,7 +15,7 @@
       <div class="lot-item__content">
         <div class="lot-item__left">
           <div class="lot-item__image">
-            <img src="<?=$val['product_img_url']; ?>" width="730" height="548" alt="Сноуборд">
+            <img src="<?=htmlspecialchars($val['product_img_url']); ?>" width="730" height="548" alt="Сноуборд">
           </div>
           <p class="lot-item__category">Категория: <span><?=htmlspecialchars($val['category']); ?></span></p>
           <p class="lot-item__description"><?=htmlspecialchars($val['description']); ?></p>
@@ -28,7 +28,7 @@
 
         <div class="lot-item__state">
           <div class="lot-item__timer timer">
-            <?=lot_time_ending($lot_info['0']['end_date']); ?>
+            <?=lot_time_ending(htmlspecialchars($lot_info['0']['end_date'])); ?>
           </div>
 
           <?php foreach ($price_info as $key => $val): ?>
@@ -47,7 +47,7 @@
             <form class="lot-item__form <?=$classname; ?>" action="" method="post">
 
             <?php $classname = isset($errors['amount']) ? "form__item--invalid" : "";
-            $value = isset($bet['amount']) ? $bet['amount'] : ""; ?>
+            $value = isset($bet['amount']) ? htmlspecialchars($bet['amount']) : ""; ?>
 
               <p class="lot-item__form-item <?=$classname; ?>">
                 <label for="cost">Ваша ставка</label>

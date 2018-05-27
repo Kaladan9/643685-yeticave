@@ -15,7 +15,7 @@
     <h2>Вход</h2>
 
     <?php $classname = isset($errors['email']) ? "form__item--invalid" : "";
-    $value = isset($login['email']) ? $login['email'] : ""; ?>
+    $value = isset($login['email']) ? htmlspecialchars($login['email']) : ""; ?>
 
     <div class="form__item <?=$classname; ?>"> <!-- form__item--invalid -->
       <label for="email">E-mail*</label>

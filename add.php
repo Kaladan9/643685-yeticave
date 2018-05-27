@@ -10,7 +10,7 @@ get_sqlcon_info($con);
 
 $product_categories = get_product_cat($con);
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $lot = $_POST['lot'];
 
     $required = ['name', 'category', 'description', 'primary_price', 'rate_step', 'end_date'];
@@ -29,13 +29,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
-    if  (($_FILES['lot_img']['name']) !== '') {
+    //проверка если сменили value
+    $cat = mysqli_real_escape_string($con, $lot['category']);
+    $cat_check = mysqli_query($con, "SELECT id FROM categories WHERE id = '$cat'");
+
+    $row_cnt = mysqli_num_rows($cat_check);
+
+    if ($row_cnt === 0) {
+        $errors['category'] = 'Выберите категорию';
+    }
+
+    if (($_FILES['lot_img']['name']) !== '') {
         $tmp_name = $_FILES['lot_img']['tmp_name'];
         $path = $_FILES['lot_img']['name'];
 
         $file_type = mime_content_type($tmp_name);
 
-        if ($file_type == 'image/png' || $file_type == 'image/jpeg') {
+        if ($file_type === 'image/png' || $file_type === 'image/jpeg') {
             $filename = uniqid();
             $lot['img_url'] = 'img/' . $filename . '.jpg';
             move_uploaded_file($tmp_name, $lot['img_url']);
@@ -67,6 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $sql = 'INSERT INTO lots (add_date, name, dscr, img_url, primary_price, end_date, rate_step, author_id, category_id)
         VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, ?)';
 
+        $res = mysqli_prepare($con, $sql);
         $stmt = db_get_prepare_stmt($con, $sql, [$lot['name'], $lot['description'], $lot['img_url'], $lot['primary_price'],
             $lot['end_date'], $lot['rate_step'], $_SESSION['user']['id'], $lot['category']]);
         $res = mysqli_stmt_execute($stmt);
