@@ -31,7 +31,7 @@
     <?php foreach ($product_cards as $key => $val): ?>
         <li class="lots__item lot">
             <div class="lot__image">
-                <img src="<?=$val['product_img_url']; ?>" width="350" height="260" alt="Сноуборд">
+                <img src="<?=htmlspecialchars($val['product_img_url']); ?>" width="350" height="260" alt="Сноуборд">
             </div>
             <div class="lot__info">
                 <span class="lot__category"><?=htmlspecialchars($val['category']); ?></span>

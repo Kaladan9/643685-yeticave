@@ -15,7 +15,7 @@
     <h2>Регистрация нового аккаунта</h2>
 
     <?php $classname = isset($errors['email']) ? "form__item--invalid" : "";
-    $value = isset($signup['email']) ? $signup['email'] : ""; ?>
+    $value = isset($signup['email']) ? htmlspecialchars($signup['email']) : ""; ?>
 
     <div class="form__item <?=$classname; ?>">
       <label for="email">E-mail*</label>
@@ -32,7 +32,7 @@
     </div>
 
     <?php $classname = isset($errors['name']) ? "form__item--invalid" : "";
-    $value = isset($signup['name']) ? $signup['name'] : ""; ?>
+    $value = isset($signup['name']) ? htmlspecialchars($signup['name']) : ""; ?>
 
     <div class="form__item <?=$classname; ?>">
       <label for="name">Имя*</label>
@@ -41,7 +41,7 @@
     </div>
 
     <?php $classname = isset($errors['contacts']) ? "form__item--invalid" : "";
-    $value = isset($signup['contacts']) ? $signup['contacts'] : ""; ?>
+    $value = isset($signup['contacts']) ? htmlspecialchars($signup['contacts']) : ""; ?>
 
     <div class="form__item <?=$classname; ?>">
       <label for="message">Контактные данные*</label>

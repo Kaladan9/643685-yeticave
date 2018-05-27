@@ -2,7 +2,7 @@
 /**
  * Создает подготовленное выражение на основе готового SQL запроса и переданных данных
  *
- * @param $link mysqli Ресурс соединения
+ * @param $con mysqli Ресурс соединения
  * @param $sql string SQL запрос с плейсхолдерами вместо значений
  * @param array $data Данные для вставки на место плейсхолдеров
  *
@@ -43,7 +43,13 @@ function db_get_prepare_stmt($con, $sql, $data = []) {
     return $stmt;
 }
 
-
+/**
+ * Форматирует цену лота, добавляет знак рубля
+ *
+ * @param $price string Цена для форматирования
+ *
+ * @return $result_price string Отформатированная цена
+ */
 function formatted_price($price) {
     ceil($price);
 
@@ -55,7 +61,14 @@ function formatted_price($price) {
     return $result_price;
 }
 
-
+/**
+ * Функция-шаблонизатор с буферизацией вывода, для захвата содержимого
+ *
+ * @param $template_url string Путь к шаблону
+ * @param $template_data array Массив с данными для шаблона
+ *
+ * @return $html Готовый html шаблон
+ */
 function include_templates($template_url, $template_data = []) {
     if (!file_exists($template_url)) {
         return print('');
@@ -68,8 +81,18 @@ function include_templates($template_url, $template_data = []) {
     return $html;
 }
 
+/**
+ * Временная зона в московское время
+*/
 date_default_timezone_set('Europe/Moscow');
 
+/**
+ * Определяет время до завершения лота в часах и минутах
+ *
+ * @param $end_date string Цена Время завершения лота
+ *
+ * @return $ending_time string Время до завершения лота
+ */
 function lot_time_ending($end_date) {
     $ts_lotend = strtotime($end_date);
     $time_to_lotend = $ts_lotend - time();
@@ -82,7 +105,13 @@ function lot_time_ending($end_date) {
     return $ending_time;
 }
 
-
+/**
+ * Получает данные о категориях из БД
+ *
+ * @param $con mysqli Ресурс соединения
+ *
+ * @return $product_categories array Массив с данными о категориях
+ */
 function get_product_cat($con) {
     $cat_sql = "SELECT id, name FROM categories
     ORDER BY id";
@@ -102,6 +131,13 @@ function get_product_cat($con) {
     return $product_categories;
 }
 
+/**
+ * Сообщает об ошибке подключения к БД
+ *
+ * @param $con mysqli Ресурс соединения
+ *
+ * @return string Текст с ошибкой подключения
+ */
 function get_sqlcon_info($con) {
     if (!$con) {
         $sql_error = mysqli_connect_error();
@@ -110,11 +146,25 @@ function get_sqlcon_info($con) {
     }
 }
 
+/**
+ * Сообщает об ошибке запроса к БД
+ *
+ * @param $con mysqli Ресурс соединения
+ *
+ * @return string Текст с ошибкой запроса
+ */
 function show_sql_err($con) {
     $sql_error = mysqli_error($con);
     print('Ошибка БД: ' . $sql_error);
 }
 
+/**
+ * Запрос к БД о самых последних лотах
+ *
+ * @param $con mysqli Ресурс соединения
+ *
+ * @return $product_cards array Массив с данными о последних лотах
+ */
 function get_lots($con) {
     $sql_lots = 'SELECT l.id AS lot_id, l.name AS name, l.primary_price AS price, l.img_url AS product_img_url, l.end_date AS end_date, c.name AS category '
     . 'FROM lots l '
@@ -127,11 +177,19 @@ function get_lots($con) {
         $product_cards = mysqli_fetch_all($res, MYSQLI_ASSOC);
         return $product_cards;
     }
-    show_sql_err($con);
+    return show_sql_err($con);
 }
 
-
+/**
+ * Запрос к БД об основной информации по конкретному лоту
+ *
+ * @param $con mysqli Ресурс соединения
+ * @param $lot_id string ID нужного лота
+ *
+ * @return $lot_info array Массив с данными о нужном лоте
+ */
 function get_lot_info($con, $lot_id) {
+    $lot_id = mysqli_real_escape_string($con, $lot_id);
     $lot_sql = "SELECT l.id AS lot_id, l.name AS name, l.dscr AS description,
     l.img_url AS product_img_url, l.author_id AS author_id, l.end_date AS end_date, c.name AS category
     FROM lots l
@@ -146,7 +204,16 @@ function get_lot_info($con, $lot_id) {
     return show_sql_err($con);
 }
 
+/**
+ * Запрос к БД о цене, шаге и максимальной ставке по конкретному лоту
+ *
+ * @param $con mysqli Ресурс соединения
+ * @param $lot_id string ID нужного лота
+ *
+ * @return $price_info array Массив с ценовой информацией о нужном лоте
+ */
 function get_lotprice_info($con, $lot_id) {
+    $lot_id = mysqli_real_escape_string($con, $lot_id);
     $price_sql = "SELECT l.id, l.primary_price AS primary_price, l.rate_step AS rate_step, MAX(b.amount) AS max_bet
     FROM lots l
     JOIN bet b
@@ -160,7 +227,16 @@ function get_lotprice_info($con, $lot_id) {
     return show_sql_err($con);
 }
 
+/**
+ * Запрос к БД о ставках по конкретному лоту
+ *
+ * @param $con mysqli Ресурс соединения
+ * @param $lot_id string ID нужного лота
+ *
+ * @return $bet_info array Массив с информацией о ставках на нужный лот
+ */
 function get_bet_info($con, $lot_id) {
+    $lot_id = mysqli_real_escape_string($con, $lot_id);
     $bet_sql = "SELECT b.bet_date AS bet_date, b.amount AS amount, u.name AS name
     FROM bet b
     JOIN users u
@@ -176,7 +252,18 @@ function get_bet_info($con, $lot_id) {
     return show_sql_err($con);
 }
 
+/**
+ * Запрос к БД о существовании ставки пользователя на конкретный лот
+ *
+ * @param $con mysqli Ресурс соединения
+ * @param $user_id string ID пользователя в сессии
+ * @param $lot_id string ID нужного лота
+ *
+ * @return bool флаг о существовании ставки пользователя на конкретный лот
+ */
 function is_user_bet($con, $user_id, $lot_id) {
+    $user_id = mysqli_real_escape_string($con, $user_id);
+    $lot_id = mysqli_real_escape_string($con, $lot_id);
     $sql = "SELECT user_id, lot_id FROM bet
     WHERE user_id = '$user_id' AND lot_id = '$lot_id'";
 
@@ -186,12 +273,29 @@ function is_user_bet($con, $user_id, $lot_id) {
     }
 }
 
+/**
+ * Определение минимально возможной ставки на лот
+ *
+ * @param $primary_price string Начальная цена лота
+ * @param $max_bet string Максимальная ставка на лот
+ * @param $rate_step string Заданный шаг ставки
+ *
+ * @return $min_amount int Минимальная ставка на лот
+ */
 function get_min_amount ($primary_price, $max_bet, $rate_step) {
     $max_price = max($primary_price, $max_bet);
     $min_amount = $max_price + $rate_step;
+
     return $min_amount;
 }
 
+/**
+ * Форматированние даты размещения ставки в зависимости от прошедшего времени
+ *
+ * @param $bet_date string Дата ставки
+ *
+ * @return $result string Отформатированная дата
+ */
 function formated_bet_date($bet_date) {
     $bet_time = strtotime($bet_date);
     $time_after_bet = time() - $bet_time;
@@ -203,13 +307,25 @@ function formated_bet_date($bet_date) {
     }else {
         $result = date('d.m.y в H:i', $time_after_bet);
     }
+
     return $result;
 }
 
+/**
+ * Добавление ставки пользователя в БД
+ *
+ * @param $con mysqli Ресурс соединения
+ * @param $amount string Сумма ставки
+ * @param $user_id ID пользователя в сессии
+ * @param $lot_id ID лота по которому делается ставка
+ *
+ * @return Обновление страницы лота в случае успешного добавления
+ */
 function add_user_bet($con, $amount, $user_id, $lot_id) {
     $sql = 'INSERT INTO bet (bet_date, amount, user_id, lot_id)
     VALUES (NOW(), ?, ?, ?)';
 
+    $res = mysqli_prepare($con, $sql);
     $stmt = db_get_prepare_stmt($con, $sql, [$amount, $user_id, $lot_id]);
     $res = mysqli_stmt_execute($stmt);
 

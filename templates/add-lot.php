@@ -15,7 +15,7 @@
     <div class="form__container-two">
 
       <?php $classname = isset($errors['name']) ? "form__item--invalid" : "";
-      $value = isset($lot['name']) ? $lot['name'] : ""; ?>
+      $value = isset($lot['name']) ? htmlspecialchars($lot['name']) : ""; ?>
 
       <div class="form__item <?=$classname; ?>">
         <label for="lot-name">Наименование</label>
@@ -31,7 +31,7 @@
           <option value="">Выберите категорию</option>
           <?php foreach ($product_categories as $cat): ?>
             <option value="<?=$cat['id']; ?>"
-              <?php if ($cat['id'] == $lot['category']) {
+              <?php if ($cat['id'] === $lot['category']) {
             print('selected'); } ?> >
             <?=$cat['name']; ?>
             </option>
@@ -42,7 +42,7 @@
     </div>
 
     <?php $classname = isset($errors['description']) ? "form__item--invalid" : "";
-    $value = isset($lot['description']) ? $lot['description'] : ""; ?>
+    $value = isset($lot['description']) ? htmlspecialchars($lot['description']) : ""; ?>
 
     <div class="form__item form__item--wide <?=$classname; ?>">
       <label for="message">Описание</label>
@@ -57,7 +57,7 @@
       <div class="preview">
         <button class="preview__remove" type="button">x</button>
         <div class="preview__img">
-          <img src="<?=$lot['img_url']; ?>" width="113" height="113" alt="Изображение лота">
+          <img src="<?=htmlspecialchars($lot['img_url']); ?>" width="113" height="113" alt="Изображение лота">
         </div>
       </div>
       <div class="form__input-file">
@@ -70,7 +70,7 @@
     <div class="form__container-three">
 
       <?php $classname = isset($errors['primary_price']) ? "form__item--invalid" : "";
-      $value = isset($lot['primary_price']) ? $lot['primary_price'] : ""; ?>
+      $value = isset($lot['primary_price']) ? htmlspecialchars($lot['primary_price']) : ""; ?>
 
       <div class="form__item form__item--small <?=$classname; ?>">
         <label for="lot-rate">Начальная цена</label>
@@ -79,7 +79,7 @@
       </div>
 
       <?php $classname = isset($errors['rate_step']) ? "form__item--invalid" : "";
-      $value = isset($lot['rate_step']) ? $lot['rate_step'] : ""; ?>
+      $value = isset($lot['rate_step']) ? htmlspecialchars($lot['rate_step']) : ""; ?>
 
       <div class="form__item form__item--small <?=$classname; ?>">
         <label for="lot-step">Шаг ставки</label>
@@ -88,7 +88,7 @@
       </div>
 
       <?php $classname = isset($errors['end_date']) ? "form__item--invalid" : "";
-      $value = isset($lot['end_date']) ? $lot['end_date'] : ""; ?>
+      $value = isset($lot['end_date']) ? htmlspecialchars($lot['end_date']) : ""; ?>
 
       <div class="form__item <?=$classname; ?>">
         <label for="lot-date">Дата окончания торгов</label>

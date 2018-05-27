@@ -10,7 +10,7 @@ get_sqlcon_info($con);
 
 $product_categories = get_product_cat($con);
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $signup = $_POST['signup'];
 
     $required = ['email', 'name', 'pass', 'contacts'];
@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $file_type = mime_content_type($tmp_name);
 
-        if ($file_type == 'image/png' || $file_type == 'image/jpeg') {
+        if ($file_type === 'image/png' || $file_type === 'image/jpeg') {
             $filename = uniqid();
             $signup['avatar'] = 'img/' . $filename . '.jpg';
             move_uploaded_file($tmp_name, $signup['avatar']);
@@ -63,6 +63,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $password = password_hash($signup['pass'], PASSWORD_DEFAULT);
 
         $user_sql = 'INSERT INTO users (add_date, email, name, pass, avatar_url, contacts) VALUES (NOW(), ?, ?, ?, ?, ?)';
+
+        $res = mysqli_prepare($con, $user_sql);
         $stmt = db_get_prepare_stmt($con, $user_sql, [$signup['email'], $signup['name'], $password, $signup['avatar'], $signup['contacts']]);
         $res = mysqli_stmt_execute($stmt);
 
